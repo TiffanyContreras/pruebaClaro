@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: clientes-deployment
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: clientes-service
+
+  template:
+    metadata:
+      labels:
+        app: clientes-service
+
+    spec:
+      containers:
+        - name: clientes-service
+          image: clientes-service:latest
+
+          imagePullPolicy: Never
+
+          ports:
+            - containerPort: 8080
+
+          env:
+            - name: DB_URL
+              value: jdbc:oracle:thin:@host.docker.internal:1521/FREE
+
+            - name: DB_USERNAME
+              value: SYSTEM
+
+            - name: DB_PASSWORD
+              value: admin123
