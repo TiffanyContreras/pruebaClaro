@@ -1,0 +1,5 @@
+Proyecto: pruebaClaro
+Microservicio: clientes-service
+Puerto: 8080
+Base de datos: Oracle
+Despliegue: Kubernetes
