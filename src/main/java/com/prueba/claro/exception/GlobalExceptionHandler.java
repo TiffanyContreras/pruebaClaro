@@ -16,6 +16,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +31,7 @@ public class GlobalExceptionHandler {
 
         Map<String, String> respuesta =
                 new HashMap<>();
-
+        
         respuesta.put(
                 "mensaje",
                 ex.getMessage()
