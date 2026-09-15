@@ -3,9 +3,11 @@ kind: Deployment
 
 metadata:
   name: clientes-deployment
+  annotations:
+    demo.claro/change: "hot-reload-v1"
 
 spec:
-  replicas: 1
+  replicas: 2
 
   selector:
     matchLabels:
@@ -15,6 +17,8 @@ spec:
     metadata:
       labels:
         app: clientes-service
+      annotations:
+        demo.claro/change: "hot-reload-v1"
 
     spec:
       containers:
