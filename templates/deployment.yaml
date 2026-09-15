@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clientes-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: clientes-service
+  template:
+    metadata:
+      labels:
+        app: clientes-service
+      annotations:
+        checksum/src: {{ include "clientes.srcChecksum" . | quote }}
+    spec:
+      containers:
+        - name: clientes-service
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_URL
+              value: jdbc:oracle:thin:@host.docker.internal:1521/FREE
+            - name: DB_USERNAME
+              value: SYSTEM
+            - name: DB_PASSWORD
+              value: admin123
+            - name: SRC_CHECKSUM
+              value: {{ include "clientes.srcChecksum" . | quote }}

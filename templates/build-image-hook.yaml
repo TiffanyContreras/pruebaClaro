@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: build-clientes-image
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: build
+          image: maven:3.9.9-eclipse-temurin-17-alpine
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -euo pipefail
+              apk add --no-cache git docker-cli
+              git clone --depth 1 --branch {{ .Values.repo.branch }} {{ .Values.repo.url }} /work
+              cd /work
+              mvn -B clean package -Dmaven.test.skip=true
+              docker build -t {{ .Values.image.repository }}:{{ .Values.image.tag }} .
+          resources:
+            requests:
+              cpu: "500m"
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 3Gi
+          volumeMounts:
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+            - name: m2
+              mountPath: /root/.m2
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
+        - name: m2
+          hostPath:
+            path: /tmp/clientes-m2
+            type: DirectoryOrCreate

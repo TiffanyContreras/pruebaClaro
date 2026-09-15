@@ -1,0 +1,8 @@
+image:
+  repository: clientes-service
+  tag: latest
+  pullPolicy: Never
+
+repo:
+  url: https://github.com/TiffanyContreras/pruebaClaro.git
+  branch: main

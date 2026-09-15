@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: clientes-service
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: /src;/pom.xml;/Dockerfile;/templates;/Chart.yaml;/values.yaml
 
 spec:
   project: default
@@ -10,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/TiffanyContreras/pruebaClaro.git
     targetRevision: main
-    path: k8s
+    path: .
 
   destination:
     server: https://kubernetes.default.svc
@@ -21,3 +23,5 @@ spec:
       enabled: true
       prune: true
       selfHeal: true
+    syncOptions:
+      - TimeoutSeconds=900
